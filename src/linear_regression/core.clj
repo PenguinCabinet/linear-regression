@@ -59,7 +59,9 @@
 
       (println "Example prediction")
       (println (apply str
-                      (concat "x=" (str (first train_x)) ", " "pred_y=" (str (predict pred_w (first train_x))) ", " "true_y=" (str (first train_y)))))
+                      (concat "x=" (str (first train_x)) ", "
+                              "pred_y=" (str (predict pred_w (first train_x))) ", "
+                              "true_y=" (str (first train_y)))))
       (println)
 
       (println "Coefficients")
