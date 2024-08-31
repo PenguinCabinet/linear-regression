@@ -1,6 +1,6 @@
 <div align="center">
 
-# 📘 linear-regression
+# 📈 linear-regression
 
 
 最小二乗法を使った線形回帰
