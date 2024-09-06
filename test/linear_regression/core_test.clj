@@ -56,3 +56,6 @@
     (is (= (get-R2 [1,2,3] [1,2,3]) 1.0))
     (is (< (get-R2 [1,2,3] [1,0,3]) (get-R2 [1,2,3] [1,2,3])))))
 
+(deftest main-test
+  (testing "main test."
+    (-main "test/test.csv")))
