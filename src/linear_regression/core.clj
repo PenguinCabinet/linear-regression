@@ -1,6 +1,8 @@
 (ns linear-regression.core
   (:require [clojure.core.matrix :as matrix]
-            [clojure.math :as math]))
+            [clojure.math :as math]
+            [clojure.string :as string]
+            [clojure.data.csv :as csv]))
 
 (defn
   predict
@@ -29,41 +31,34 @@
           (reduce + (mapv #(math/pow (- %1 %2) 2) y pred_y))
           (reduce + (mapv #(math/pow (- %1 mean_y) 2) y))))))
 
-(require '[clojure.data.csv :as csv])
 
 
 (defn -main
-  "I don't do a whole lot."
+  "main"
   [input_csv_name]
   (let [text (slurp input_csv_name :encoding "utf-8")
         rows (csv/read-csv text)
-        data rows
-        train_x (mapv #(into [] (drop-last
-                                 (mapv (fn [x] (Float/parseFloat x))
-                                       %1)))
-                      data)
-        train_y (mapv #(last
-                        (mapv (fn [x] (Float/parseFloat x))
-                              %1))
-                      data)]
+        data (mapv (fn [x] (mapv (fn [x2] (Float/parseFloat x2)) x)) rows)
+        train_x (mapv #(into [] (drop-last %1)) data)
+        train_y (mapv #(last %1) data)]
     (println "Learning...\n")
-    (let [pred_w (fit train_x train_y)]
+    (let [pred_w (fit train_x train_y)
+          pred_y (mapv #(predict pred_w %1) train_x)]
       (println "Predict Function")
-      (println (apply str
-                      (concat "f(x) = "
-                              (map #(str %1 "*X" %2 "+")
-                                   pred_w
-                                   (range (- (count pred_w) 1)))
-                              (str (last pred_w)))))
+      (printf "f(x) = %s+%f\n"
+              (string/join (map-indexed #(str %2 "*X" %1 "+") (drop-last pred_w)))
+              (last pred_w))
       (println)
 
       (println "Example prediction")
-      (println (apply str
-                      (concat "x=" (str (first train_x)) ", "
-                              "pred_y=" (str (predict pred_w (first train_x))) ", "
-                              "true_y=" (str (first train_y)))))
+      (printf "x=%s, pred_y=%f, true_y=%f\n"
+              (-> (first train_x) str)
+              (first pred_y)
+              (first train_y))
       (println)
 
       (println "Coefficients")
-      (println "R^2 =" (get-R2
-                        train_y (mapv #(predict pred_w %1) train_x))))))
+
+      (printf "R^2 = %f\n"
+              (get-R2
+               train_y pred_y)))))
