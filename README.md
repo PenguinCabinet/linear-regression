@@ -26,7 +26,7 @@ x=[0.0], pred_y=3.0, true_y=3.0
 Coefficients
 R^2 = 1.0
 ```
-### 入力データのフォーマット
+### [入力データのフォーマット](https://github.com/PenguinCabinet/linear-regression/blob/main/test/test.csv?plain=1)
 単回帰分析の場合、下記のようになります。
 ```csv
 0,3
